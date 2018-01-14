@@ -15,6 +15,7 @@ import math
 import random
 from sympy import isprime
 
+
 class NTT:
 
     def isInteger(self, M):
@@ -28,11 +29,11 @@ class NTT:
     # complexity is O(N^(1/2))
     def factorize(self, N):
         factors = []
-        for factor in range(1, int(math.sqrt(N)+1)):
+        for factor in range(1, int(math.sqrt(N) + 1)):
             if N % factor == 0:
                 if factor != 1:
                     factors.append(factor)
-                    factors.append(int(N/factor))
+                    factors.append(int(N / factor))
         factors.sort()
         return factors
 
@@ -62,11 +63,11 @@ class NTT:
     # let a is primitive root i.e a^phi(M) = 1 (mod M) then
     # B = a^(phi(M)/N) (mod M) is Nth root of unity iff N|phi(M)
     def NthRootOfUnity(self, M, N):
-        assert self.isPrime(M), 'Not a prime.' # modulus should be a prime
+        assert self.isPrime(M), 'Not a prime.'  # modulus should be a prime
         phi_M = M - 1
         while True:
             alpha = random.randrange(1, M)
-            beta = self.modExponent(alpha, phi_M/N, M)
+            beta = self.modExponent(alpha, phi_M / N, M)
             # check if beta can be N/k th root of unity iff k|N
             if not self.existSmallN(beta, M, N):
                 return int(beta)
