@@ -1,13 +1,12 @@
 # Number Theoretic Transform
 
-Generate primitive $n$th root of unity
+Generate primitive nth root of unity
 --------------------------------------
+![img](http://www.sciweavers.org/tex2img.php?eq=r%5En%5Cequiv%201%5Cpmod%20m&bc=White&fc=Black&im=jpg&fs=12&ff=arev&edit=0)
 
-$$r^n\equiv 1\pmod m$$
-
-$r$ is the primitive $n$th root of unity iff there are not other numbers $k$ divide $n$ such that $r^k\equiv 1\pmod m$.  
+r is the primitive $n$th root of unity iff there are not other numbers k divide n such that ![img](http://www.sciweavers.org/tex2img.php?eq=r%5Ek%5Cequiv%201%5Cpmod%20m&bc=White&fc=Black&im=jpg&fs=12&ff=arev&edit=0).  
 Use `NthRootOfUnity` function to generate the primitive $n$th root of unity.  
-**NOTE: In my design, modulus must be prime.**
+**NOTE: In my design, modulus must be prime.**  
 TODO
 ----
 Implement NTT algorithm under ideal.
