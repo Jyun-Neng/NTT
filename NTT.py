@@ -26,6 +26,7 @@ class NTT:
 
     # factorize algorithm
     # complexity is O(N^(1/2))
+    # not used
     def factorize(self, N):
         factors = []
         for factor in range(1, int(math.sqrt(N)+1)):
@@ -49,13 +50,11 @@ class NTT:
             power = power >> 1
         return result
 
-    # check if r^factor = 1 (mod M)
+    # check if r^k = 1 (mod M), k<N
     def existSmallN(self, r, M, N):
-        factors = self.factorize(N)
-        for factor in factors:
-            if factor != 1:
-                if self.modExponent(r, factor, M) == 1:
-                    return True
+        for k in range(2, N):
+            if self.modExponent(r, k, M) == 1:
+               return True
         return False
 
     # generate primitive nth root of unity
@@ -67,7 +66,7 @@ class NTT:
         while True:
             alpha = random.randrange(1, M)
             beta = self.modExponent(alpha, phi_M/N, M)
-            # check if beta can be N/k th root of unity iff k|N
+            # check if beta can be k th root of unity, k<N
             if not self.existSmallN(beta, M, N):
                 return int(beta)
 
