@@ -16,12 +16,12 @@ else:
 
 M = 2013265921
 poly = [1, 2, 3, 4]     # 4x^3+3x^2+2x+1
+print("Modulus : %d" % M)
+print("Polynomial : ", poly)
 N = len(poly)
 w = ntt.NthRootOfUnity(M, N)
 ntt_poly = ntt.ntt(poly, M, N, w)
 intt_poly = ntt.intt(ntt_poly, M, N, w)
-print("Modulus : %d" % M)
-print("Polynomial : ", poly)
 print("Polynomial degree : %d" % (N - 1))
 print("Primitive %dth root of unity : %d" % (N, w))
 print("NTT(poly) = ", ntt_poly)
