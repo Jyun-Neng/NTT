@@ -2,11 +2,11 @@
 #                                                       #
 # File Name: NTT.py                                     #
 #                                                       #
-# Purpose: generate primitive Nth root of unity         #
+# Purpose: Implement number theoretic transform         #
 #                                                       #
 # Creation Date: 2017/12/29                             #
 #                                                       #
-# Last Modified: 2017/01/10                             #
+# Last Modified: 2018/02/13                             #
 #                                                       #
 # Create By: Jyun-Neng Ji                               #
 #                                                       #
@@ -94,33 +94,62 @@ class NTT:
     def isNthRootOfUnity(self, M, N, beta):
         return self.modExponent(beta, N, M) == 1
 
-    # Basic method of NTT 
-    # The complexity is O(N^2)
+    def bitReverse(self, num, len):
+        """
+        integer bit reverse
+        input: num, bit length
+        output: rev_num 
+        example: input 6(110) output 3(011)
+        complexity: O(len)
+        """
+        rev_num = 0
+        for i in range(0, len):
+            if (num >> i) & 1:
+                rev_num |= 1 << (len - 1 - i)
+        return rev_num
+
+    def orderReverse(self, poly, N_bit):
+        """docstring for order"""
+        for i, coeff in enumerate(poly):
+            rev_i = self.bitReverse(i, N_bit)
+            if rev_i > i:
+                coeff ^= poly[rev_i]
+                poly[rev_i] ^= coeff
+                coeff ^= poly[rev_i]
+                poly[i] = coeff
+        return poly
+
+    # Basic method of NTT
+    # The complexity is O(N log N)
     def ntt(self, poly, M, N, w):
         """number theoretic transform algorithm"""
-        points = []
-        for k in range(0, N):
-            point = 0
-            for i in range(0, N):
-                point += poly[i] * self.modExponent(w, i * k, M)
-            point = point % M
-            points.append(point)
+        N_bit = N.bit_length() - 1
+        rev_poly = self.orderReverse(poly, N_bit)
+        for i in range(0, N_bit):
+            points1, points2 = [], []
+            for j in range(0, int(N / 2)):
+                shift_bits = N_bit - 1 - i
+                P = (j >> shift_bits) << shift_bits
+                w_P = self.modExponent(w, P, M)
+                odd = poly[2 * j + 1] * w_P
+                even = poly[2 * j]
+                points1.append((even + odd) % M)
+                points2.append((even - odd) % M)
+                # TODO: use barrett modular reduction
+                points = points1 + points2
+            if i != N_bit:
+                poly = points
         return points
-    # TODO: reduce it's complexity
 
     # Basic metho of inverse NTT
-    # The complexity is O(N^2)
+    # The complexity is O(N log N)
     def intt(self, points, M, N, w):
         """inverse number theoretic transform algorithm"""
-        poly = []
         inv_w = self.modInv(w, M)
         inv_N = self.modInv(N, M)
+        p = []
+        poly = self.ntt(points, M, N, inv_w)
         for i in range(0, N):
-            coeff = 0
-            for k in range(0, N):
-                coeff += points[k] * self.modExponent(inv_w, i * k, M)
-            coeff *= inv_N
-            coeff %= M
-            poly.append(coeff)
+            poly[i] = (poly[i] * inv_N) % M
+            # TODO: use barrett modular reduction
         return poly
-    # TODO: reduce it's complexity
